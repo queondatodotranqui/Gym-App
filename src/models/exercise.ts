@@ -29,6 +29,4 @@ const exerciseSchema = new Schema<Exercise>({
 
 const exerciseModel = model<Exercise>('exercise', exerciseSchema);
 
-module.exports = {
-    exerciseModel
-}
+export { exerciseModel }

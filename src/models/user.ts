@@ -55,6 +55,4 @@ const userSchema = new Schema<User>({
 
 const userModel = model<User>('user', userSchema);
 
-module.exports = {
-    userModel
-}
+export { userModel }

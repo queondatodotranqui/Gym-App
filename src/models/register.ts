@@ -25,6 +25,4 @@ const recordSchema = new Schema<Record>({
 
 const recordModel = model<Record>('record', recordSchema);
 
-module.exports = {
-    recordModel
-}
+export { recordModel }
