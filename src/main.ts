@@ -2,13 +2,19 @@
 import * as express from "express";
 import './db/mongoose'
 
-const PORT = process.env.PORT || 3000;
-const app = express();
-app.use(express.json())
+// routes
+import userRouter from "./routes/userRoutes";
+import recordRouter from "./routes/recordRoutes";
+import exerciseRouter from "./routes/exerRoutes";
 
-app.get('/', (req, res)=>{
-    res.send({msg:'Server up and working'})
-})
+// consts and middleware
+const PORT = process.env.PORT
+const app = express()
+
+app.use(express.json())
+app.use(userRouter)
+app.use(recordRouter)
+app.use(exerciseRouter)
 
 app.listen(PORT, ()=>{
     console.log(`Server up in port ${PORT}`);
