@@ -33,9 +33,9 @@ const userSchema = new Schema<User>({
         type:String, 
         required:true,
         minlength: 6,
-        validate(value:any){
-            if(validator.matches(value, '/[Pp]assword/')){
-                throw new Error('Password cant be password')
+        validate(value:string){
+            if(value.toLowerCase().match(/password/)){
+                throw new Error('Password cannot be password');
             }
         }
     },
@@ -55,4 +55,7 @@ const userSchema = new Schema<User>({
 
 const userModel = model<User>('user', userSchema);
 
-export { userModel }
+export { 
+    userModel,
+    User
+}

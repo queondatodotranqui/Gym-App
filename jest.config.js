@@ -6,8 +6,5 @@ module.exports = {
     'ts-jest': {
         isolatedModules: true
     }
-  },
-  testPathIgnorePatterns:[
-    "src/db"
-  ]
+  }
 };
