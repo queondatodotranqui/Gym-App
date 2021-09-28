@@ -1,7 +1,7 @@
 import { app } from '../../main'
 import * as supertest from 'supertest'
 import { disconnect } from 'mongoose'
-import { setupDB } from '../mockData/user'
+import { mockUser, setupDB } from '../mockData/user'
 import * as chalk from 'chalk'
 
 const request = supertest(app)
@@ -14,58 +14,110 @@ describe(chalk.bgWhite.black(' Users '), ()=>{
 
     describe('POST', ()=>{
 
-        it('Should create user receiving 201 status code from /signup', async ()=>{
+        describe('/signup', ()=>{
 
-            await request.post('/signup')
-                .send({
-                    username: 'nicolas',
-                    email: 'nicolas@gmail.com',
-                    password: 'pastafrola123'
-                })
-                .expect(201)
+            it('Should create user receiving 201 status code ', async ()=>{
+
+                await request.post('/signup')
+                    .send({
+                        username: 'nicolaskkk',
+                        email: 'nicolakks@gmail.com',
+                        password: 'pastafrola123'
+                    })
+                    .expect(201)
+            })
+    
+            it('Should get a 400 bad request status from sending empty body ', async ()=>{
+    
+                await request.post('/signup')
+                    .send()
+                    .expect(400)
+            })
+    
+            it('Should get a 400 bad request for sending an invalid email ', async ()=>{
+    
+                const response = await request.post('/signup')
+                    .send({
+                        username: 'roberto',
+                        email:'noesunemailesto',
+                        password:'botelladeagua'
+                    })
+                    .expect(400)
+    
+                expect(response.body.error).toContain('email')
+            })
+    
+            it('Should get a 400 bad request for sending an invalid password (password) ', async ()=>{
+    
+                const response = await request.post('/signup')
+                    .send({
+                        username: 'roberto',
+                        email:'nicolas@gmail.com',
+                        password:'password'
+                    })
+                    .expect(400)
+    
+                expect(response.body.error).toContain('password')
+            })
+    
+            it('Should receive a jwt in the response after signing up ', async ()=>{
+    
+                const response = await request.post('/signup')
+                    .send({
+                        username:'richard',
+                        email:'richard@gmail.com',
+                        password:'tomenaguapanas'
+                    })
+                    .expect(201)
+    
+                expect(response.body.token).toBeTruthy()
+            })
         })
 
-        it('Should get a 400 bad request status from sending empty body to /signup', async ()=>{
+        describe('/login', ()=>{
 
-            await request.post('/signup')
-                .send()
-                .expect(400)
-        })
+            it('Should login an existing user', async ()=>{
 
-        it('Should get a 400 bad request for sending an invalid email ', async ()=>{
+                await request.post('/login')
+                    .send({
+                        email: mockUser.email,
+                        password: mockUser.password
+                    })
+                    .expect(200)
+            })
 
-            const response = await request.post('/signup')
-                .send({
-                    username: 'roberto',
-                    email:'noesunemailesto',
-                    password:'botelladeagua'
-                })
-                .expect(400)
+            it('Should return a 404 not found for searching a non existing user', async ()=>{
 
-            expect(response.body.error).toContain('email')
-        })
-
-        it('Should get a 400 bad request for sending an invalid password (password) ', async ()=>{
-
-            const response = await request.post('/signup')
-                .send({
-                    username: 'roberto',
-                    email:'nicolas@gmail.com',
-                    password:'password'
-                })
-                .expect(400)
-
-            expect(response.body.error).toContain('password')
+                await request.post('/login')
+                    .send({
+                        email: 'usuarionoregis@gmail.com',
+                        password: 'pastafrola'
+                    })
+                    .expect(404)
+            })
         })
     })
 
     describe('GET', ()=>{
 
-        it('Should receive Success message from get(\'/\') endpoint', async ()=>{
+        describe('/me', ()=>{
 
-            const response = await request.get('/')
-    
-            expect(response.body.msg).toBe('Success')
+            it('Should get the users profile data if authorized', async ()=>{
+
+                await request.get('/me')
+                    .withCredentials()
+                    //@ts-ignore
+                    .set('Authorization', mockUser.tokens[0].token)
+                    .expect(200)
+            })
+
+            it('Should not send data and should give a 400 bad request if not authorized', async ()=>{
+
+                await request.get('/me')
+                    .withCredentials()
+                    //@ts-ignore
+                    .expect(400)
+            })
         })
     })
 
