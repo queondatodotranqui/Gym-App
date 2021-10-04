@@ -121,6 +121,21 @@ describe(chalk.bgWhite.black(' Users '), ()=>{
         })
     })
 
+    describe('PATCH', ()=>{
+
+        describe('/me', ()=>{
+
+            it('Should update the user data and receive a 200 status', async ()=>{
+
+                await request.patch('/me')
+                    .send({
+                        username:'tuvieja123'
+                    })
+                    .expect(200)
+            })
+        })
+    })
+
 })
 
 afterAll(async()=>{

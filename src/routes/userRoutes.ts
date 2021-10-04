@@ -1,6 +1,7 @@
 import * as express from 'express';
 import { userModel } from '../models/user';
 import * as jwt from 'jsonwebtoken'
+import { auth } from '../middleware/auth'
 
 const userRouter = express.Router()
 
@@ -40,19 +41,26 @@ userRouter.post('/login', async (req, res)=>{
     }
 })
 
-userRouter.get('/me', async (req, res)=>{
+userRouter.get('/me', auth,  async (req, res)=>{
     
     try{
-        //@ts-ignore
-        const token = req.headers.authorization
-        //@ts-ignore
-        const decoded = jwt.verify(token, process.env.SECRET)
-        const user = await userModel.findById(decoded)
+        //@ts-ignores
+        const user = await userModel.findById(req.userData._id)
 
         return res.status(200).send({msg:'Success', user})
     }
     catch(e){
         return res.status(400).send({msg:'Error', e})
+    }
+})
+
+userRouter.patch('/me', async (req, res)=>{
+
+    try{
+        return res.status(200).send({msg:'Success'})
+    }
+    catch(e:any){
+        return res.status(400).send({msg:'Error', error:e.message})
     }
 })
 
