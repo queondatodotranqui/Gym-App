@@ -1,4 +1,4 @@
-import { app } from '../../main'
+import { app } from '../../app'
 import * as supertest from 'supertest'
 import { disconnect } from 'mongoose'
 import { mockUser, setupDB } from '../mockData/user'
@@ -111,12 +111,13 @@ describe(chalk.bgWhite.black(' Users '), ()=>{
                     .expect(200)
             })
 
-            it('Should not send data and should give a 400 bad request if not authorized', async ()=>{
+            it('Should not send data and should give a 500 status code if not authorized', async ()=>{
 
                 await request.get('/me')
                     .withCredentials()
                     //@ts-ignore
-                    .expect(400)
+                    .set('Authorization', '')
+                    .expect(500)
             })
         })
     })
