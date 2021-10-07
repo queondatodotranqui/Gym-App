@@ -111,13 +111,13 @@ describe(chalk.bgWhite.black(' Users '), ()=>{
                     .expect(200)
             })
 
-            it('Should not send data and should give a 500 status code if not authorized', async ()=>{
+            it('Should not send data and should give a 401 status code if not authorized', async ()=>{
 
                 await request.get('/me')
                     .withCredentials()
                     //@ts-ignore
                     .set('Authorization', '')
-                    .expect(500)
+                    .expect(401)
             })
         })
     })

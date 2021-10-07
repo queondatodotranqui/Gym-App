@@ -1,19 +1,32 @@
 import * as jwt from 'jsonwebtoken';
 import { Request, Response, NextFunction } from 'express';
+import { userModel } from '../models/user';
 
-const auth = (req:Request, res:Response, next:NextFunction) =>{
+const auth = async (req:Request, res:Response, next:NextFunction) =>{
 
-    const token = req.headers.authorization?.replace('Bearer ', '')
+    try{
+        //@ts-ignore
+        const token = req.headers.authorization.replace('Bearer ', '')
 
-    //@ts-ignore
-    const decoded = jwt.verify(token, process.env.SECRET)
+        //@ts-ignore
+        const decoded = jwt.verify(token, process.env.SECRET)
 
-    //@ts-ignore
-    req.userData = {
-        token,
-        _id:decoded._id
+        const user = await userModel.findOne({_id:decoded._id, 'tokens.token': token})
+
+        if(!user){
+            throw new Error('Error')
+        }
+
+        //@ts-ignore
+        req.userData = {
+            token,
+            user
+        }
     }
-
+    catch(e:any){
+        return res.status(401).send({error:'Please authenticate'})
+    }
+    
     next()
 }
 

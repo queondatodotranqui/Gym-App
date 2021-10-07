@@ -6,8 +6,8 @@
   "scripts": {
     "start": "node src/main.js",
     "dev": "env-cmd -f ./env/dev.env ts-node-dev --respawn src/index.ts",
-    "localdb": "mongod --dbpath=/Users/Nicolas/mongodb-data",
-    "test": "env-cmd -f ./env/test.env jest --watch --verbose --coverage --detectOpenHandles --maxWorkers=1"
+    "localdb": "mongod --dbpath=/Users/cokie/mongodb-data",
+    "test": "env-cmd -f ./env/test.env jest --watch --verbose --coverage --detectOpenHandles --maxWorkers=1 --no-cache"
   },
   "keywords": [],
   "author": "",
