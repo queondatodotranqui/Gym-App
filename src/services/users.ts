@@ -51,8 +51,26 @@ const getProfile = async (req:Request, res:Response)=>{
 
 const updateProfile = async (req:Request, res:Response)=>{
 
+    const allowed = ['username', 'password', 'avatar']
+    const updated = Object.keys(req.body)
+
+    const isValid = updated.every((item) =>{return allowed.includes(item)})
+
+    if(!isValid){
+        return res.status(400).send({msg:'Bad request'})
+    }
+
     try{
-        return res.status(200).send({msg:'Success'})
+        const data = req.body;
+        //@ts-ignore
+        const { user } = req.userData;
+
+        updated.forEach((item)=>{
+            user[item] = data[item]
+        })
+
+        await user.save()
+        return res.status(200).send({msg:'Success', user})
     }
     catch(e:any){
         return res.status(400).send({msg:'Error', error:e.message})

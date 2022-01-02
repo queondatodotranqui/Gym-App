@@ -11,6 +11,6 @@ userRouter.post('/login', user.login)
 
 userRouter.get('/me', auth, user.getProfile)
 
-userRouter.patch('/me', user.updateProfile)
+userRouter.patch('/me', auth,  user.updateProfile)
 
 export default userRouter;

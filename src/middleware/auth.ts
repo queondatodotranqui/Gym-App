@@ -13,21 +13,17 @@ const auth = async (req:Request, res:Response, next:NextFunction) =>{
 
         const user = await userModel.findOne({_id:decoded._id, 'tokens.token': token})
 
-        if(!user){
-            throw new Error('Error')
-        }
-
         //@ts-ignore
         req.userData = {
             token,
             user
         }
+
+        next()
     }
     catch(e:any){
         return res.status(401).send({error:'Please authenticate'})
     }
-    
-    next()
 }
 
 export { auth }

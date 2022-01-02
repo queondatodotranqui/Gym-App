@@ -129,10 +129,34 @@ describe(chalk.bgWhite.black(' Users '), ()=>{
             it('Should update the user data and receive a 200 status', async ()=>{
 
                 await request.patch('/me')
+                    .withCredentials()
+                    //@ts-ignore
+                    .set('Authorization', mockUser.tokens[0].token)
                     .send({
                         username:'tuvieja123'
                     })
                     .expect(200)
+            })
+
+            it('Should not update the user data and receive a 401 status', async ()=>{
+
+                await request.patch('/me')
+                    .send({
+                        username:'tuvieja123'
+                    })
+                    .expect(401)
+            })
+
+            it('Should not update the user data with invalid data, and should receive a 400 status', async ()=>{
+
+                await request.patch('/me')
+                    .withCredentials()
+                    //@ts-ignore
+                    .set('Authorization', mockUser.tokens[0].token)
+                    .send({
+                        username:'tu'
+                    })
+                    .expect(400)
             })
         })
     })
